@@ -59,6 +59,27 @@ class VisualLine {
   }
 }
 
+class VisualLineIterator {
+  VisualLine[] lineArray;
+  int index = 0;
+  
+  VisualLineIterator(VisualLine[] lineArray) {
+    this.lineArray = lineArray;
+  }
+  
+  boolean next() {
+    if (!this.lineArray[this.index].drawByStep()) {
+      this.index++;
+      
+      if (this.index > this.lineArray.length) {
+        return false;
+      }
+    }
+     
+    return true;
+  }
+}
+
 void setup() {
   size(1800, 1200);
 
@@ -103,11 +124,10 @@ void calculateHistogram() {
 }
 
 int normalizeHistogram() {
-  int maxAmount = 1;
   int index = 0;
 
   for (int i = 0; i < hueAmount; i++) { 
-    index = histogram[i] > maxAmount ? i : index;
+    index = histogram[i] > histogram[index] ? i : index;
   }
 
   for (int i = 0; i < hueAmount; i++) {
@@ -128,14 +148,14 @@ void drawColorEclipse(int maxLine, int offsetLength, int offsetX, int offsetY) {
   }
 }
 
-int i = 0;
+boolean canNext = true;
+
+VisualLineIterator iterator = new VisualLineIterator(lineArray);
 
 void draw() {
   image(image, width / 2 - 250, height / 2 - 250);
-
-  if (i < hueAmount) {
-    if (!lineArray[i].drawByStep()) {
-      i++;
-    }
+  
+  if (canNext) {
+    canNext = iterator.next();
   }
 }
