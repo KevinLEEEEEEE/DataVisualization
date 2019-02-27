@@ -26,17 +26,16 @@ class VisualLine {
   int step = 4;
   float totalLength;
   float currLength = 0;
-  float k;
-  float kParams;
+  float sinRadius;
+  float cosRadius;
   Point center;
 
-  VisualLine(int hue, float totalLength, float k, Point center) {
+  VisualLine(int hue, float totalLength, float radius, Point center) {
     this.hue = hue;
     this.totalLength = totalLength < 1 ? 1 : totalLength;
-    this.k = k;
     this.center = center;
-
-    this.kParams = sqrt(pow(k, 2) + 1);
+    this.sinRadius = sin(radius);
+    this.cosRadius = cos(radius);
   }
 
   void drawLine(Point start, Point end) {
@@ -47,13 +46,14 @@ class VisualLine {
 
   boolean drawByStep() {
     boolean isMaxLength = this.currLength + this.step >= this.totalLength;
+    float currLength = isMaxLength ? this.totalLength : this.currLength;
 
-    float offsetX = (isMaxLength ? this.totalLength : this.currLength) / this.kParams;
-    float offsetY = this.k * offsetX;
+    float offsetX = currLength * this.sinRadius;
+    float offsetY = currLength * this.cosRadius;
 
     this.drawLine(this.center.offset(-offsetX, -offsetY), this.center.offset(offsetX, offsetY));
 
-    this.currLength += this.step;
+    this.currLength += this.step++;
 
     return !isMaxLength;
   }
@@ -61,6 +61,7 @@ class VisualLine {
 
 class VisualLineIterator {
   VisualLine[] lineArray;
+  boolean canNext = true;
   int index = 0;
   
   VisualLineIterator(VisualLine[] lineArray) {
@@ -68,10 +69,16 @@ class VisualLineIterator {
   }
   
   boolean next() {
+    if (!this.canNext) {
+      return false;
+    }
+    
     if (!this.lineArray[this.index].drawByStep()) {
       this.index++;
       
-      if (this.index > this.lineArray.length) {
+      if (this.index >= this.lineArray.length) {
+        this.canNext = false;
+        
         return false;
       }
     }
@@ -86,8 +93,6 @@ void setup() {
   colorMode(HSB, 360, 100, 100);
 
   strokeWeight(3);
-
-  frameRate(100);
 
   loadImageAndMask();
 
@@ -124,14 +129,19 @@ void calculateHistogram() {
 }
 
 int normalizeHistogram() {
+  float max = 0;
   int index = 0;
 
-  for (int i = 0; i < hueAmount; i++) { 
-    index = histogram[i] > histogram[index] ? i : index;
+  for (int i = 0; i < hueAmount; i++) {     
+    if (histogram[i] > max) {
+      max = histogram[i];
+      
+      index = i;
+    }
   }
 
   for (int i = 0; i < hueAmount; i++) {
-    normalizedHistogram[i] = histogram[i] * 1.0 / histogram[index];
+    normalizedHistogram[i] = histogram[i] * 1.0 / max;
   }
 
   return index;
@@ -143,19 +153,15 @@ void drawColorEclipse(int maxLine, int offsetLength, int offsetX, int offsetY) {
     float radius = (i + 180) * PI / 180;
     float centerX = offsetLength * sin(radius) + offsetX;
     float centerY = offsetLength * cos(radius) + offsetY;
-
-    lineArray[i] = new VisualLine(i, lineLength, 1 / tan(radius), new Point(centerX, centerY));
+    
+    lineArray[i] = new VisualLine(i, lineLength, radius, new Point(centerX, centerY));
   }
 }
-
-boolean canNext = true;
 
 VisualLineIterator iterator = new VisualLineIterator(lineArray);
 
 void draw() {
   image(image, width / 2 - 250, height / 2 - 250);
   
-  if (canNext) {
-    canNext = iterator.next();
-  }
+  iterator.next();
 }
