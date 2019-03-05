@@ -11,6 +11,6 @@ class QuakeEvent {
     this.depth = depth;
     this.mag = mag;
 
-    this.energy = pow(10, 4.8) * pow(10, 1.5 * this.mag);
+    this.energy = pow(10, 1.5 * this.mag);
   }
 }

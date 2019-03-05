@@ -1,6 +1,9 @@
 PShape globey;
 PImage globeyTexture;
 float maxEnergy = 0.0;
+float minEnergy = 0.0;
+float maxMag = 0.0;
+float minMag = 0.0;
 ArrayList<QuakeEvent> quakeList = new ArrayList<QuakeEvent>();
 
 void setup() {
@@ -8,13 +11,13 @@ void setup() {
   
   colorMode(HSB, 360, 100, 100);
 
-  strokeWeight(2);
+
   
   loadDatas();
 
   loadShapes();
 
-  calcMaxValue(quakeList);
+  calcMinMaxValue(quakeList);
 }
 
 void loadShapes() {
@@ -45,14 +48,33 @@ void generateQuakeData(Table table, ArrayList list) {
   }
 }
 
-void calcMaxValue(ArrayList<QuakeEvent> list) {
-  float tmpEnergy = 0.0;
+void calcMinMaxValue(ArrayList<QuakeEvent> list) {
+  float tmpMax = 0.0;
+  float tmpMin = Float.MAX_VALUE;
+  float tmpMaxMag = 0.0;
+  float tmpMinMag = Float.MAX_VALUE;
 
   for(QuakeEvent event : list) {
-    if (tmpEnergy < event.energy) tmpEnergy = event.energy;
+    if (tmpMax < event.energy) {
+      tmpMax = event.energy;
+    } else if (tmpMin > event.energy) {
+      tmpMin = event.energy;
+    }
+    
+    if (tmpMaxMag < event.mag) {
+      tmpMaxMag = event.mag;
+    } else if (tmpMinMag > event.mag) {
+      tmpMinMag = event.mag;
+    }
   }
 
-  maxEnergy = tmpEnergy;
+  maxEnergy = tmpMax;
+
+  minEnergy = tmpMin;
+
+  minMag = tmpMinMag;
+  
+  maxMag = tmpMaxMag;
 }
 
 float energyLimit(float energy) {
@@ -67,10 +89,14 @@ void drawQuakeLines(ArrayList<QuakeEvent> list) {
 
     rotateY(radians(event.longitude));
 
-    float h = map(energyLimit(event.energy), 0, energyLimit(maxEnergy), 180, 360);
+    float h = map(event.energy, minEnergy, maxEnergy, 150, 360);
+    
+    float weight = map(event.mag, minMag,maxMag, 0.5, 4);
+    
+    strokeWeight(weight);
 
     stroke(h, 80, 100);
-
+    
     line(0, 0, 100, 0, 0, 100 + map(event.energy, 0, maxEnergy, 0, 2000));
     
     popMatrix();
@@ -80,9 +106,9 @@ void drawQuakeLines(ArrayList<QuakeEvent> list) {
 void draw() {
   background(15);
   
-  directionalLight(200, 30, 40, 0, 1, 0);
+  directionalLight(200, 30, 50, 0, 1, 0);
 
-  pointLight(200, 60, 60, width / 2, -height, 0);
+  pointLight(200, 60, 70, width / 2, -height, height / 2);
 
   translate(width / 2, height / 2, 0); // first move origin to the center
 
