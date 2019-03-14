@@ -10,8 +10,6 @@ void setup() {
   size(1800, 1200, P3D); 
   
   colorMode(HSB, 360, 100, 100);
-
-
   
   loadDatas();
 
