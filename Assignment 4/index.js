@@ -26,12 +26,12 @@ const mapLocationToValue = (array) => {
 const fillColorOfStates = (nodeMap, valueMap) => {
   Object.keys(nodeMap).forEach((key) => {
     const value = valueMap[key] || 0;
-    const smallerThanMid = value < 10.2;
+    const smallerThanMid = value < 10;
     const node = nodeMap[key];
 
     node.style.fill = smallerThanMid ? 'green' : 'OrangeRed';
 
-    node.style.opacity = value / 20.4;
+    node.style.opacity = value / 20;
   });
 }
 
