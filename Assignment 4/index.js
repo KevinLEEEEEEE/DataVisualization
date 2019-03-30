@@ -2,7 +2,7 @@ const mapSvgToNode = (svg) => {
   const map = {};
   const paths = svg.contentDocument.querySelectorAll("path");
 
-  for(path of paths) {
+  for (path of paths) {
     const location = path.getAttribute("inkscape:label");
 
     map[location] = path;
@@ -14,7 +14,7 @@ const mapSvgToNode = (svg) => {
 const mapLocationToValue = (array) => {
   const map = {};
 
-  for(value of array) {
+  for (value of array) {
     const location = `${value[1]}, ${value[2]}`;
 
     map[location] = value[4];
@@ -42,9 +42,9 @@ const updateMessage = (() => {
   return (node, valueMap) => {
     const location = node.getAttribute("inkscape:label");
     const value = valueMap[location];
-  
+
     locationNode.innerText = location;
-  
+
     rateNode.innerText = value;
   }
 })();
@@ -67,7 +67,7 @@ const listenNodeSelectEvent = (valueMap) => {
 
   const saveNode = (target) => {
     currNode = target;
-  
+
     currOpacity = target.style.opacity;
 
     currFill = target.style.fill;
@@ -75,23 +75,25 @@ const listenNodeSelectEvent = (valueMap) => {
 
   const selectNode = (target) => {
     target.style.fill = 'blue';
-  
+
     target.style.opacity = '1';
   }
-  
-  USASvg.contentDocument.addEventListener('mousemove', ({ target }) => {
+
+  USASvg.contentDocument.addEventListener('mousemove', ({
+    target
+  }) => {
     const label = target.getAttribute("inkscape:label");
     if (label === "#State_borders" || label === '') {
       return;
     }
 
     if (target.nodeName === "path") {
-  
+
       USASvg.style.opacity = '0.6';
-  
+
       if (label !== currLabel) {
         clearNode();
-  
+
         saveNode(target);
 
         selectNode(target);
@@ -100,7 +102,7 @@ const listenNodeSelectEvent = (valueMap) => {
       }
     } else {
       clearNode();
-  
+
       USASvg.style.opacity = '1';
     }
   })
@@ -114,5 +116,3 @@ USASvg.addEventListener("load", () => {
 
   fillColorOfStates(nodeMap, valueMap);
 }, false);
-
-
