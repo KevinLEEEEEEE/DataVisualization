@@ -1,5 +1,6 @@
 Table MicroBlogs;
 PImage Map;
+Clock clock = new Clock(4, 30, 0);
 ArrayList<BlogMessage> fluMessages = new ArrayList<BlogMessage>();
 
 void setup() {
@@ -36,12 +37,12 @@ void searchBlogs() {
   }
 }
 
-void drawDatas(int dateIndex) {
+void drawDatas() {
     for (BlogMessage message : fluMessages) {
-      if (message.withinRange(dateIndex)) {
+      if (message.withinRange(clock.getDateIndex())) {
         float x = map(message.latitude, 42.3017, 42.1609, 0, width);
         float y = map(message.longitude, 93.5673, 93.1923, 0, height);
-        float hue = map(message.dateIndex, 3600, 7125, 120, 0);
+        float hue = map(message.dateIndex, 3600, 4080, 120, 0);
         
         stroke(hue, 80, 100);
         
@@ -50,17 +51,7 @@ void drawDatas(int dateIndex) {
   }
 }
 
-void updateDateText(int dateIndex) {
-    int month = dateIndex / 720;
-    int day = dateIndex / 24 % 30;
-    int hour = dateIndex - (month * 30 + day) * 24;
-    
-    if (day == 0) {
-      month--;
-      
-      day = 30;
-    }
-
+void updateDateText() {
     pushMatrix();    
     
     pushMatrix();
@@ -75,16 +66,13 @@ void updateDateText(int dateIndex) {
     
     fill(0, 0, 100);
    
-    text(String.valueOf(month) + "/" + (day < 10 ? "0" : "") +  String.valueOf(day) + "  " + (hour < 10 ? "0" : "")  + String.valueOf(hour)+ ":00", 30, 70);
+    text(clock.getCurrentMonth() + "/" + clock.getCurrentDay() + "  " + clock.getCurrentHour(), 30, 70);
     
     popMatrix();
 }
 
-void updateSunLight(int dateIndex) {
-    int month = dateIndex / 720;
-    int day = dateIndex / 24 % 30;
-    int hour = dateIndex - (month * 30 + day) * 24;
-    float sunlight = map(abs(hour - 12), 0, 11, 10, 120);
+void updateSunLight() {
+    float sunlight = map(abs(clock.hour - 12), 0, 11, 10, 120);
 
     pushMatrix();
     
@@ -95,18 +83,16 @@ void updateSunLight(int dateIndex) {
     popMatrix();
 }
 
-int dateIndex = 3600;
-
 void draw() {
-  if (dateIndex <= 7125) {
+  if (clock.getDateIndex() <= 4080) {
     image(Map, 0, 0, width, height);
     
-    updateSunLight(dateIndex);
+    updateSunLight();
   
-    drawDatas(dateIndex);
+    drawDatas();
   
-    updateDateText(dateIndex);
-  
-    dateIndex++;    
+    updateDateText(); 
+    
+    clock.tick();
   }
 }
