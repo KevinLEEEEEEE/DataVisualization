@@ -1,10 +1,6 @@
 class BlogMessage {
-  int month;
-  int day;
-  int hour;
-  int dateIndex;
-  float latitude;
-  float longitude;
+  Time time;
+  Location location;
   
   BlogMessage(String date, String location) {
     this.calcDate(date);
@@ -24,23 +20,31 @@ class BlogMessage {
     if (hour.indexOf(" ") != -1) {
       hour = hour.substring(1, hour.length()); 
     }
-    
-    this.day = Integer.parseInt(day);
-    this.month = Integer.parseInt(month);
-    this.hour = Integer.parseInt(hour);
-    this.dateIndex = (this.month * 30 + this.day) * 24 + this.hour;
+
+    this.time = new Time(Integer.parseInt(month), Integer.parseInt(day), Integer.parseInt(hour));
   }
   
   void calcLocation(String location) {
     int space = location.indexOf(" ");
-    String lantitude = location.substring(0, space);
+    String latitude = location.substring(0, space);
     String longitude = location.substring(space, location.length());
     
-    this.latitude = Float.parseFloat(lantitude);
-    this.longitude = Float.parseFloat(longitude);
+    this.location = new Location(Float.parseFloat(latitude), Float.parseFloat(longitude));
+  }
+  
+  int getTimeIndex() {
+    return this.time.getTimeIndex(); 
+  }
+  
+  float getLatitude() {
+    return this.location.getLatitude();
+  }
+ 
+  float getLongtitude() {
+    return this.location.getLongtitude();
   }
   
   boolean withinRange(int dateIndex) {
-     return this.dateIndex <= dateIndex;
+     return this.getTimeIndex() <= dateIndex;
   }
 }

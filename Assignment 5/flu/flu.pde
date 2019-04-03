@@ -40,9 +40,9 @@ void searchBlogs() {
 void drawDatas() {
     for (BlogMessage message : fluMessages) {
       if (message.withinRange(clock.getDateIndex())) {
-        float x = map(message.latitude, 42.3017, 42.1609, 0, width);
-        float y = map(message.longitude, 93.5673, 93.1923, 0, height);
-        float hue = map(message.dateIndex, 3600, 4080, 120, 0);
+        float x = map(message.getLatitude(), 42.3017, 42.1609, 0, width);
+        float y = map(message.getLongtitude(), 93.5673, 93.1923, 0, height);
+        float hue = map(message.getTimeIndex(), 3600, 4080, 120, 0);
         
         stroke(hue, 80, 100);
         
