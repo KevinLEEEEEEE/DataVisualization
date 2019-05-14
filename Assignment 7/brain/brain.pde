@@ -19,7 +19,7 @@ void setup() {
     parseMriDat(i);
   }
   
-  for(int i = 1; i < 15; i++) {
+  for(int i = 1; i <6; i++) {
     drawLayer(layers.get(i), -i);
   }
 }
