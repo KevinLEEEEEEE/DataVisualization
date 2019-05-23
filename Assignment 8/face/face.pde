@@ -41,6 +41,10 @@ void drawImagePoint(int i, int j) {
   }
 
   point(i * 25, map(averageBrightness, 60, 80, 0, 600));
+  
+  // image.resize(40, 50);
+  
+  // image(image, i * 25, map(averageBrightness, 60, 80, 0, 600));
 }
 
 float analysisImage(PImage image) {
