@@ -1,17 +1,23 @@
+ArrayList<Point> points = new ArrayList<Point>();
+
 void setup() {
   size(1000, 1000, P3D); 
   
   noStroke();
   
-  // colorMode(HSB, 360, 100, 100);
+  background(200);
   
   drawBloodVessels();
+  
+  colorMode(HSB, 360, 100, 100);
+
+  for(Point p : points) {
+    draw3DPoint(p);
+  }
 }
 
-ArrayList<Point> points = new ArrayList<Point>();
-
 void drawBloodVessels() {
-  for(int i = 1; i < 10; i++) {
+  for(int i = 1; i < 99; i++) {
     drawVesselByFrame(i);
   }
 }
@@ -33,21 +39,9 @@ void draw3DPoint(Point p) {
   
   translate(p.x, p.y, -p.z);
   
-  fill(200, 100, 50);
-  
   box(1);
   
-  popMatrix();
-}
-
-void draw() {
-  background(200);
-    
-  rotateX(radians(map(mouseY, 0, height, -180, 180)));
-
-  rotateY(radians(map(mouseX, 0, width, -180, 180)));
+  fill(360, 80, p.z);
   
-  for(Point p : points) {
-    draw3DPoint(p);
-  }
+  popMatrix();
 }
