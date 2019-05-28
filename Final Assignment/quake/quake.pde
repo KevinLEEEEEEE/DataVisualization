@@ -47,25 +47,25 @@ void generateQuakeData(Table table, ArrayList<QuakeLocation> list) {
 
 void drawQuakePoint(QuakePoint point) {
   int currTime = point.timeStamp.getTimeStamp() - StartTimeStamp;
-  float xPos = map(currTime, 0, 7300, 0, 2500);
+  float xPos = map(currTime, 0, 7400, 0, 2500);
   
   drawPoint(xPos + 20, 50, 0, point.sewer_and_water);
   
-  drawPoint(xPos + 20, 150, 30, point.power);
+  drawPoint(xPos + 20, 150, 45, point.power);
   
-  drawPoint(xPos + 20, 250, 60, point.roads_and_bridges);
+  drawPoint(xPos + 20, 250, 90, point.roads_and_bridges);
   
-  drawPoint(xPos + 20, 350, 90, point.medical);
+  drawPoint(xPos + 20, 350, 135, point.medical);
   
-  drawPoint(xPos + 20, 450, 120, point.buildings);
+  drawPoint(xPos + 20, 450, 180, point.buildings);
   
-  drawPoint(xPos + 20, 550, 150, point.shake_intensity);
+  drawPoint(xPos + 20, 550, 225, point.shake_intensity);
 }
 
 void drawPoint(float x, float y, int hue, float level) {
   pushMatrix();
   
-  stroke(hue, 100, level * 9 + 10);
+  stroke(hue, level * 9 + 10, level * 9 + 10);
   
   strokeWeight(level * level / 5);
   
